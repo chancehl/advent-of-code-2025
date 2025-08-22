@@ -1,5 +1,7 @@
 import os
 
+from src.utils.timer import time_execution
+
 
 def read_input():
     path = os.path.join(os.path.dirname(__file__), "example.txt")
@@ -8,6 +10,7 @@ def read_input():
         return [line.strip() for line in f.readlines()]
 
 
+@time_execution
 def part_one(input: list[str]) -> int:
     (left, right) = make_lists(input)
 
@@ -22,6 +25,7 @@ def part_one(input: list[str]) -> int:
     return diff
 
 
+@time_execution
 def part_two(input: list[str]) -> int:
     (left, right) = make_lists(input)
 
@@ -49,8 +53,8 @@ def count_numbers(numbers: list[int]) -> dict[int, int]:
 
 
 def make_lists(lines: list[str]) -> tuple[list[int], list[int]]:
-    left = []
-    right = []
+    left: list[int] = []
+    right: list[int] = []
 
     for line in lines:
         parts = line.split("   ")
@@ -58,7 +62,7 @@ def make_lists(lines: list[str]) -> tuple[list[int], list[int]]:
         left.append(int(parts[0]))
         right.append(int(parts[1]))
 
-    return [left, right]
+    return (left, right)
 
 
 if __name__ == "__main__":
