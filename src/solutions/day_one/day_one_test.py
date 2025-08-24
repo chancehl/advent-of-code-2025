@@ -1,4 +1,4 @@
-from src.solutions.day_one.day_one import make_lists
+from solutions.day_one.day_one import make_lists
 
 
 def test_make_lists():
