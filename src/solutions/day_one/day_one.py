@@ -1,7 +1,5 @@
 import os
 
-from src.utils.timer import time_execution
-
 
 def read_input():
     path = os.path.join(os.path.dirname(__file__), "example.txt")
@@ -10,7 +8,6 @@ def read_input():
         return [line.strip() for line in f.readlines()]
 
 
-@time_execution
 def part_one(input: list[str]) -> int:
     (left, right) = make_lists(input)
 
@@ -25,7 +22,6 @@ def part_one(input: list[str]) -> int:
     return diff
 
 
-@time_execution
 def part_two(input: list[str]) -> int:
     (left, right) = make_lists(input)
 
