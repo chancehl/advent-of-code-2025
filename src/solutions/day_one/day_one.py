@@ -1,7 +1,7 @@
 import os
 
 
-def read_input():
+def read_input() -> list[str]:
     path = os.path.join(os.path.dirname(__file__), "example.txt")
 
     with open(path, "r") as f:
