@@ -1,6 +1,7 @@
-import importlib
 import sys
 import time
+
+from .solution_resolver import resolve_function, resolve_input, resolve_module
 
 
 def main():
@@ -18,28 +19,21 @@ def main():
     if part < 1 or part > 2:
         raise ValueError("part must be either 1 or 2")
 
-    module = importlib.import_module(f"aoc.day{day:02d}")
-    func = getattr(module, f"part_{"one" if part == 1 else "two"}")
-
-    start = time.perf_counter()
-    result = func(read_input(day, example=example))
-    end = time.perf_counter()
-    elapsed = (end - start) * 1000  # in ms
+    (result, elapsed) = execute_solution(day, part, example)
 
     print(f"[year 2025 / day {day} / part {part}]: {result} ({elapsed:.2f}ms)")
 
 
-def read_input(day: int, **kwargs) -> str:
-    use_example = kwargs.get("example", True)
+def execute_solution(day: int, part: int, example: bool) -> tuple[int, float]:
+    module = resolve_module(day)
+    solution = resolve_function(module, part)
+    input = resolve_input(day, example)
 
-    path = (
-        f"./inputs/day{day:02d}.example.txt"
-        if use_example
-        else f"./inputs/day{day:02d}.txt"
-    )
+    start = time.perf_counter()
+    result = solution(input)
+    end = time.perf_counter()
 
-    with open(path, "r", encoding="utf-8") as f:
-        return f.read()
+    return (result, (end - start) * 1000)
 
 
 if __name__ == "__main__":
