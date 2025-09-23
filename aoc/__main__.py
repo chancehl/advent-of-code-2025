@@ -2,6 +2,7 @@ import sys
 import time
 
 from aoc.resolver import resolve_function, resolve_input, resolve_module
+from aoc.constants import CHRISTMAS_TREE
 
 
 def main():
@@ -21,6 +22,7 @@ def main():
 
     (result, elapsed) = execute_solution(day, part, example)
 
+    print("🎄Advent of Code 2025 🎄" + "\n" + CHRISTMAS_TREE)
     print(f"[year 2025 / day {day} / part {part}]: {result} ({elapsed:.2f}ms)")
 
 

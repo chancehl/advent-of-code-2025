@@ -43,7 +43,7 @@ def write_input_to_disk(day: int, text: str):
     with file_path.open("w") as f:
         f.write(text.strip() + "\n")
 
-    print(f"✅ Saved input to {file_path}")
+    print(f"🎄 Saved input to {file_path}")
 
 
 if __name__ == "__main__":
