@@ -11,3 +11,9 @@ obj
 
 # Virtual environments
 .venv
+
+# Environment variables
+.env
+
+# Input files
+aoc/days/**/input.txt

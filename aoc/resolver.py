@@ -1,5 +1,6 @@
 import importlib
 import sys
+import os
 
 
 def resolve_module(day: int):
@@ -34,6 +35,10 @@ def resolve_input(day: int, use_example: bool = False) -> str:
         path = f"./aoc/days/{day:02d}/example.txt"
     else:
         path = f"./aoc/days/{day:02d}/input.txt"
+
+    if not os.path.exists(path):
+        print(f"[error] file does not exist at {path}")
+        sys.exit(1)
 
     with open(path, "r", encoding="utf-8") as f:
         return f.read()
