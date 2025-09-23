@@ -1,12 +1,5 @@
-from aoc.common.matrix import make_matrix
-
-
 def part_one(input_txt: str) -> int:
     (left, right) = make_lists(input_txt)
-
-    matrix = make_matrix(input_txt)
-    print(matrix)
-
     sorted_left = sorted(left)
     sorted_right = sorted(right)
 

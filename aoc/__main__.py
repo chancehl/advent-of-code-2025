@@ -1,7 +1,7 @@
 import sys
 import time
 
-from .solution_resolver import resolve_function, resolve_input, resolve_module
+from aoc.resolver import resolve_function, resolve_input, resolve_module
 
 
 def main():
