@@ -41,4 +41,4 @@ def resolve_input(day: int, use_example: bool = False) -> str:
         sys.exit(1)
 
     with open(path, "r", encoding="utf-8") as f:
-        return f.read()
+        return f.read().strip()

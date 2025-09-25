@@ -44,7 +44,7 @@ def make_lists(raw_input: str) -> tuple[list[int], list[int]]:
     right = []
 
     for line in lines:
-        parts = line.split("   ")
+        parts = line.split()
 
         left.append(int(parts[0]))
         right.append(int(parts[1]))
