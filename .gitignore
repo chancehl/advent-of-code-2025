@@ -16,4 +16,4 @@ obj
 .env
 
 # Input files
-aoc/days/**/input.txt
+aoc/solutions/**/input.txt
