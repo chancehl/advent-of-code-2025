@@ -1,11 +1,14 @@
-from aoc.common.matrix import make_matrix
 from itertools import combinations
+
+from aoc.common.datastructs.matrix import make_matrix
+from aoc.common.timer import timed
 
 
 ASCENDING = 1
 DESCENDING = 2
 
 
+@timed
 def part_one(input: str) -> int:
     safe = 0
 
@@ -16,6 +19,7 @@ def part_one(input: str) -> int:
     return safe
 
 
+@timed
 def part_two(input: str) -> int:
     safe = 0
 

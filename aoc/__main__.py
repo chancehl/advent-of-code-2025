@@ -1,5 +1,4 @@
 import sys
-import time
 import math
 
 from aoc.resolver import resolve_function, resolve_input, resolve_module
@@ -21,22 +20,14 @@ def main():
     if part < 1 or part > 2:
         raise ValueError("part must be either 1 or 2")
 
-    (result, elapsed) = execute_solution(day, part, example)
-
-    print("🎄Advent of Code 2025 🎄" + "\n" + CHRISTMAS_TREE)
-    print(f"[year 2025 / day {day} / part {part}]: {result} ({math.floor(elapsed)}ms)")
-
-
-def execute_solution(day: int, part: int, example: bool) -> tuple[int, float]:
     module = resolve_module(day)
     solution = resolve_function(module, part)
     input = resolve_input(day, example)
 
-    start = time.perf_counter()
-    result = solution(input)
-    end = time.perf_counter()
+    (result, elapsed) = solution(input)
 
-    return (result, (end - start) * 1000)
+    print("🎄Advent of Code 2025 🎄" + "\n" + CHRISTMAS_TREE)
+    print(f"[year 2025 / day {day} / part {part}]: {result} ({math.floor(elapsed)}ms)")
 
 
 if __name__ == "__main__":

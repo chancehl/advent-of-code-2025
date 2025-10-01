@@ -1,3 +1,7 @@
+from aoc.common.timer import timed
+
+
+@timed
 def part_one(input_txt: str) -> int:
     (left, right) = make_lists(input_txt)
     sorted_left = sorted(left)
@@ -11,6 +15,7 @@ def part_one(input_txt: str) -> int:
     return diff
 
 
+@timed
 def part_two(input_txt: str) -> int:
     (left, right) = make_lists(input_txt)
 
