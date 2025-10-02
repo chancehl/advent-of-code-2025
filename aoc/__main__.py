@@ -59,11 +59,12 @@ def generate(ctx, day):
     example_file = day_dir / "example.txt"
     example_file.touch()
 
-    click.echo(
-        f"🎁 Generated placeholder solution files for day {day}. You may run the solution by executing this command in your terminal:"
-    )
-    click.echo(f"uv run -m aoc execute --day {day} --part 1 --example")
-    click.echo("🎅 Good luck!")
+    click.echo(f"🎊 Ho ho ho! Day {day} template created! 🎊")
+    click.echo("")
+    click.echo("Ready to solve? Run this command:")
+    click.echo(f"   uv run -m aoc execute --day {day} --part 1 --example")
+    click.echo("")
+    click.echo("🎅 May your code be merry! 🎄")
 
 
 @cli.command()
