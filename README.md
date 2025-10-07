@@ -43,9 +43,9 @@ aoc/
 │   └── day01/
 │       ├── solution.py # Your solution code
 │       └── example.txt # Example input
-├── common/            # Shared utilities
-├── api/              # Input fetching
-└── generator/        # Template generation
+├── common/             # Shared utilities
+├── api/                # Input fetching
+└── generator/          # Template generation
 ```
 
 ## Getting Your Session Token
@@ -56,4 +56,4 @@ aoc/
 4. Copy the `session` cookie value
 5. Add it to your `.env` file
 
-🎅 Happy coding and may your solutions be merry and bright! 🎄
+🎅 Merry Christmas! 🎄
