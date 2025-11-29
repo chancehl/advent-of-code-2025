@@ -4,7 +4,7 @@ import os
 
 
 def resolve_module(day: int):
-    module_name = f"aoc.solutions.day{day:02d}.solution"
+    module_name = f"aoc.solutions.years.2025.day{day:02d}.solution"
 
     try:
         return importlib.import_module(module_name)
@@ -32,9 +32,9 @@ def resolve_input(day: int, use_example: bool = False) -> str:
     path = ""
 
     if use_example:
-        path = f"./aoc/solutions/day{day:02d}/example.txt"
+        path = f"./aoc/solutions/years/2025/day{day:02d}/example.txt"
     else:
-        path = f"./aoc/solutions/day{day:02d}/input.txt"
+        path = f"./aoc/solutions/years/2025/day{day:02d}/input.txt"
 
     if not os.path.exists(path):
         print(f"[error] file does not exist at {path}")

@@ -46,7 +46,7 @@ def generate(ctx, day):
         click.echo("day must be between 1 and 25")
         sys.exit(1)
 
-    day_dir = pathlib.Path(f"./aoc/solutions/day{day:02d}")
+    day_dir = pathlib.Path(f"./aoc/solutions/years/2025/day{day:02d}")
 
     if day_dir.exists():
         raise FileExistsError(f"Directory already exists: {day_dir}")
