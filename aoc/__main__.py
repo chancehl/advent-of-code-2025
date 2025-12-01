@@ -78,7 +78,7 @@ def fetch(ctx, day):
         click.echo("missing AOC_SESSION environment variable")
         sys.exit(1)
 
-    url = f"https://adventofcode.com/2024/day/{day}/input"
+    url = f"https://adventofcode.com/2025/day/{day}/input"
 
     resp = requests.get(url, cookies={"session": session})
     if resp.status_code != 200:
