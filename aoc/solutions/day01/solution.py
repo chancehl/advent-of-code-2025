@@ -1,5 +1,4 @@
 from aoc.common.timer import timed
-from .operation import Operation
 
 LEFT = "L"
 RIGHT = "R"
@@ -8,35 +7,49 @@ RIGHT = "R"
 @timed
 def part_one(input_txt: str) -> int:
     zeroes = 0
-    current = 50
+    posn = 50
 
     for line in input_txt.splitlines():
-        operation = Operation(line)
-        next = operation.get_next_value(current)
-
-        if next == 0:
+        direction, clicks = line[0], int(line[1:])
+        
+        if direction == "L":
+            posn = (posn - clicks) % 100
+        else:
+            posn = (posn + clicks) % 100
+            
+        if posn == 0:
             zeroes += 1
-
-        current = next
 
     return zeroes
 
 
 @timed
 def part_two(input_txt: str) -> int:
-    total_passes = 0
-    current = 50
+    passes = 0
+    posn = 50
 
     for line in input_txt.splitlines():
-        operation = Operation(line)
+        direction, clicks = line[0], int(line[1:])
 
-        next = operation.get_next_value(current)
-        passes = operation.get_passes(current)
+        while clicks > 0:
+            new_posn = posn
 
-        total_passes += passes
-        current = next
+            if direction == "L" and posn == 0:
+                new_posn = 99
+            elif direction == "L":
+                new_posn = posn - 1
+            elif direction == "R" and posn == 99:
+                new_posn = 0
+            elif direction == "R":
+                new_posn = posn + 1
 
-    return total_passes
+            if new_posn == 0:
+                passes +=1 
+            
+            posn = new_posn
+            clicks -= 1
+
+    return passes
 
 
 
