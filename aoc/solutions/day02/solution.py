@@ -3,11 +3,44 @@ from aoc.common.timer import timed
 
 @timed
 def part_one(input_txt: str) -> int:
-    print(input_txt)
+    id_ranges = [create_range(value) for value in input_txt.split(",")]
 
-    return -1
+    invalid_sum = 0
+
+    for start, end in id_ranges:
+        current = start
+
+        while current <= end:
+            if is_invalid_id(current):
+                invalid_sum += current
+
+            current += 1
+
+    return invalid_sum
 
 
 @timed
 def part_two(input_txt: str) -> int:
     return -1
+
+
+def create_range(s: str) -> tuple[int, int]:
+    parts = s.split("-")
+
+    start = int(parts[0])
+    end = int(parts[1])
+
+    return (start, end)
+
+
+def is_invalid_id(n: int) -> bool:
+    chars = str(n)
+
+    if len(chars) % 2 != 0:
+        return False
+
+    mid = len(chars) // 2
+    front = chars[0:mid]
+    back = chars[mid:]
+
+    return front == back
