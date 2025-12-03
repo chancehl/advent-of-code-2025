@@ -1,8 +1,5 @@
 from aoc.common.timer import timed
 
-LEFT = "L"
-RIGHT = "R"
-
 
 @timed
 def part_one(input_txt: str) -> int:
