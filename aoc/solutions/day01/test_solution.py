@@ -1,6 +1,7 @@
 from utils.dedent import dedent
 from .solution import part_one, part_two
 
+
 def test_part_one_basic_example():
     example_input = """
         L68
@@ -20,6 +21,7 @@ def test_part_one_basic_example():
 
     assert expected == result
 
+
 def test_part_two_basic_example():
     example_input = """
         L68
@@ -38,6 +40,7 @@ def test_part_two_basic_example():
     (result, _) = part_two(dedent(example_input))
 
     assert expected == result
+
 
 def test_part_two_edge_case():
     example_input = """

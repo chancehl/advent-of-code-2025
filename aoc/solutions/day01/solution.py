@@ -8,12 +8,12 @@ def part_one(input_txt: str) -> int:
 
     for line in input_txt.splitlines():
         direction, clicks = line[0], int(line[1:])
-        
+
         if direction == "L":
             posn = (posn - clicks) % 100
         else:
             posn = (posn + clicks) % 100
-            
+
         if posn == 0:
             zeroes += 1
 
@@ -41,12 +41,9 @@ def part_two(input_txt: str) -> int:
                 new_posn = posn + 1
 
             if new_posn == 0:
-                passes +=1 
-            
+                passes += 1
+
             posn = new_posn
             clicks -= 1
 
     return passes
-
-
-
