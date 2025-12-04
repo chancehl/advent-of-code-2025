@@ -25,10 +25,3 @@ def part_one(input_txt: str) -> int:
 @timed
 def part_two(input_txt: str) -> int:
     return -1
-
-
-def get_max_index(nums: list[int]) -> int:
-    """Returns the index of a max value in a list of nums (**important**: it cannot be the last number)"""
-    max_value = max(nums[0 : len(nums) - 1])
-
-    return nums.index(max_value)
