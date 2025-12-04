@@ -12,7 +12,9 @@ def part_one(input_txt: str) -> int:
         current = start
 
         while current <= end:
-            if is_invalid_id(current):
+            is_even = len(str(current)) % 2 == 0
+
+            if is_even and is_invalid_id(current):
                 invalid_sum += current
 
             current += 1
