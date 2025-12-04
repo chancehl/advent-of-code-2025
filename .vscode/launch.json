@@ -12,11 +12,25 @@
             "args": [
                 "execute",
                 "--day",
-                "2",
+                "${input:day}",
                 "--part",
-                "2",
+                "${input:part}",
                 "--example"
             ]
+        }
+    ],
+    "inputs": [
+        {
+            "id": "day",
+            "type": "promptString",
+            "description": "Day to run",
+            "default": "3"
+        },
+        {
+            "id": "part",
+            "type": "promptString",
+            "description": "Part to run (type 1 or 2)",
+            "default": "1"
         }
     ]
 }
