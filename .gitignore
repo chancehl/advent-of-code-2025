@@ -17,3 +17,6 @@ obj
 
 # Input files
 aoc/solutions/**/input.txt
+
+# Ruff
+.ruff_cache
