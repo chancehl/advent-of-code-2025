@@ -12,7 +12,7 @@ def part_one(input_txt: str) -> int:
         1
         for row in range(len(grid))
         for col in range(len(grid[0]))
-        if grid[col][row] == "@" and is_movable_roll(grid, (row, col))
+        if grid[row][col] == "@" and is_movable_roll(grid, (row, col))
     )
 
 
@@ -26,7 +26,7 @@ def part_two(input_txt: str) -> int:
             (row, col)
             for row in range(len(grid))
             for col in range(len(grid[0]))
-            if grid[col][row] == "@" and is_movable_roll(grid, (row, col))
+            if grid[row][col] == "@" and is_movable_roll(grid, (row, col))
         ]
 
         if not removable_rolls:
@@ -34,7 +34,7 @@ def part_two(input_txt: str) -> int:
 
         count += len(removable_rolls)
         for row, col in removable_rolls:
-            grid[col][row] = "."
+            grid[row][col] = "."
 
     return count
 
@@ -53,6 +53,6 @@ def is_movable_roll(grid: WrappingPaperGrid, coords: Coordinates) -> bool:
 
 def get_node(grid: WrappingPaperGrid, coords: Coordinates) -> str | None:
     row, col = coords
-    if 0 <= row < len(grid[0]) and 0 <= col < len(grid):
-        return grid[col][row]
+    if 0 <= row < len(grid) and 0 <= col < len(grid[0]):
+        return grid[row][col]
     return None
