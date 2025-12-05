@@ -1,7 +1,6 @@
 from aoc.common.timer import timed
 
 type IngredientRange = tuple[int, int]
-type IngredientRanges = list[IngredientRange]
 
 
 @timed
@@ -30,7 +29,7 @@ def part_two(input_txt: str) -> int:
     return len(fresh_ids)
 
 
-def parse_ranges(input: str) -> IngredientRanges:
+def parse_ranges(input: str) -> list[IngredientRange]:
     raw = input.split("\n\n")[0]
     processed = []
 
@@ -47,7 +46,7 @@ def parse_ingredients(input: str) -> list[int]:
     return [int(value) for value in raw.splitlines()]
 
 
-def is_fresh(ingredient: int, ranges: IngredientRanges) -> bool:
+def is_fresh(ingredient: int, ranges: list[IngredientRange]) -> bool:
     for start, end in ranges:
         if ingredient >= start and ingredient <= end:
             return True
