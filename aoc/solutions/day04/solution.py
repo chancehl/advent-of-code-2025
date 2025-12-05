@@ -10,9 +10,9 @@ def part_one(input_txt: str) -> int:
 
     movable_rolls = 0
 
-    for x in range(len(grid)):
-        for y in range(len(grid[0])):
-            if grid[y][x] == "@" and is_movable_roll(grid, (x, y)):
+    for row in range(len(grid)):
+        for col in range(len(grid[0])):
+            if grid[col][row] == "@" and is_movable_roll(grid, (row, col)):
                 movable_rolls += 1
 
     return movable_rolls
@@ -20,7 +20,22 @@ def part_one(input_txt: str) -> int:
 
 @timed
 def part_two(input_txt: str) -> int:
-    return -1
+    grid = make_grid(input_txt)
+
+    count = 0
+
+    while True:
+        removable_rolls = get_removable_rolls(grid)
+
+        if len(removable_rolls) == 0:
+            break
+
+        count += len(removable_rolls)
+
+        for row, col in removable_rolls:
+            grid[col][row] = "."
+
+    return count
 
 
 def make_grid(input: str) -> WrappingPaperGrid:
@@ -29,8 +44,7 @@ def make_grid(input: str) -> WrappingPaperGrid:
     lines = input.splitlines()
 
     for line in lines:
-        row = list(line)
-        grid.append(row)
+        grid.append(list(line))
 
     return grid
 
@@ -38,19 +52,19 @@ def make_grid(input: str) -> WrappingPaperGrid:
 def is_movable_roll(grid: WrappingPaperGrid, coords: Coordinates) -> bool:
     surrounding_rolls = 0
 
-    x, y = coords
+    row, col = coords
 
-    left = (x - 1, y)
-    right = (x + 1, y)
+    left = (row - 1, col)
+    right = (row + 1, col)
 
-    up = (x, y - 1)
-    down = (x, y + 1)
+    up = (row, col - 1)
+    down = (row, col + 1)
 
-    up_left = (x - 1, y - 1)
-    up_right = (x + 1, y - 1)
+    up_left = (row - 1, col - 1)
+    up_right = (row + 1, col - 1)
 
-    down_right = (x + 1, y + 1)
-    down_left = (x - 1, y + 1)
+    down_right = (row + 1, col + 1)
+    down_left = (row - 1, col + 1)
 
     to_check = [left, right, up, down, up_left, up_right, down_right, down_left]
 
@@ -65,9 +79,20 @@ def is_movable_roll(grid: WrappingPaperGrid, coords: Coordinates) -> bool:
 
 
 def get_node(grid: WrappingPaperGrid, coords: Coordinates) -> str | None:
-    x, y = coords
+    row, col = coords
 
-    if x < 0 or x > len(grid[0]) - 1 or y < 0 or y > len(grid) - 1:
+    if row < 0 or row > len(grid[0]) - 1 or col < 0 or col > len(grid) - 1:
         return None
 
-    return grid[y][x]
+    return grid[col][row]
+
+
+def get_removable_rolls(grid: WrappingPaperGrid) -> list[Coordinates]:
+    coords = []
+
+    for row in range(len(grid)):
+        for col in range(len(grid[0])):
+            if grid[col][row] == "@" and is_movable_roll(grid, (row, col)):
+                coords.append((row, col))
+
+    return coords
