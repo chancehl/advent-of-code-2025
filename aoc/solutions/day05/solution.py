@@ -7,7 +7,6 @@ type IngredientRanges = list[IngredientRange]
 @timed
 def part_one(input_txt: str) -> int:
     ranges = parse_ranges(input_txt)
-
     ingredients = parse_ingredients(input_txt)
 
     sum = 0
@@ -21,7 +20,14 @@ def part_one(input_txt: str) -> int:
 
 @timed
 def part_two(input_txt: str) -> int:
-    return -1
+    ranges = parse_ranges(input_txt)
+    fresh_ids = set()
+
+    for start, end in ranges:
+        for i in range(start, end + 1):
+            fresh_ids.add(i)
+
+    return len(fresh_ids)
 
 
 def parse_ranges(input: str) -> IngredientRanges:
