@@ -11,11 +11,11 @@ def part_one(input_txt: str) -> int:
 
     running_sum = 0
 
-    for problem in worksheet:
-        if problem[1] == "+":
-            running_sum += sum(problem[0])
+    for operands, sign in worksheet:
+        if sign == "+":
+            running_sum += sum(operands)
         else:
-            running_sum += math.prod(problem[0])
+            running_sum += math.prod(operands)
 
     return running_sum
 
@@ -35,7 +35,9 @@ def parse_worksheet(input_txt: str) -> list[CephalapodHomeworkProblem]:
     for col in range(0, len(raw_grid[0])):
         operands = []
         for row in range(0, len(raw_grid) - 1):
-            operands.append(int(raw_grid[row][col]))
-        problems.append((operands, raw_grid[-1][col]))
+            operand = int(raw_grid[row][col])
+            operands.append(operand)
+        sign = raw_grid[-1][col] # last element is always the sign
+        problems.append((operands, sign))
 
     return problems
