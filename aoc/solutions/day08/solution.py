@@ -1,21 +1,30 @@
 from aoc.common.timer import timed
 from aoc.common.euclid import Coordinates3D, compute_distance
-from aoc.common.dsu import UnionFind
+from aoc.common.unionfind import UnionFind
 
-import heapq
+import math
 
 
 @timed
 def part_one(input_txt: str) -> int:
     coordinates = parse_input(input_txt)
 
+    return make_connections(coordinates, 1000)
+
+
+@timed
+def part_two(input_txt: str) -> int:
+    return -1
+
+
+def make_connections(coords: list[Coordinates3D], n: int) -> int:
     pairs = {}
 
-    for i in range(0, len(coordinates)):
-        for j in range(0, len(coordinates)):
+    for i in range(0, len(coords)):
+        for j in range(0, len(coords)):
             target = (min(i, j), max(i, j))
             if i != j and target not in pairs:
-                pairs[target] = compute_distance(coordinates[i], coordinates[j])
+                pairs[target] = compute_distance(coords[i], coords[j])
 
     # sort connections by distance
     sorted_pairs = sorted(pairs.keys(), key=lambda b: pairs[b])
@@ -23,21 +32,22 @@ def part_one(input_txt: str) -> int:
     # use a union-find (disjoint set) to track circuits
     # - initialize each junction box to its own set
     # - initialize connections to 0
-    union_find = UnionFind(len(coordinates))
+    union_find = UnionFind(len(coords))
     connections = 0
 
     # - for each pair starting with the shortest circuit:
     #       - if two boxes are in different sets, merge the sets and increment connections count
     #       - if they are in the same set, do nothing
-    # - count the sizes of the connected circuits
+    for i, j in sorted_pairs:
+        union_find.union(i, j)
+        connections += 1
+
+        if connections == n:
+            break
+
     # - multiply the 3 largest circuits
-
-    return -1
-
-
-@timed
-def part_two(input_txt: str) -> int:
-    return -1
+    circuit_sizes = sorted(union_find.size, reverse=True)
+    return math.prod(circuit_sizes[0:3])
 
 
 def parse_input(input_txt: str) -> list[Coordinates3D]:
@@ -48,10 +58,3 @@ def parse_input(input_txt: str) -> list[Coordinates3D]:
         coordinates.append((int(parts[0]), int(parts[1]), int(parts[2])))
 
     return coordinates
-
-
-def find_set(n: int, all: list[list[int]]) -> tuple[int, list[int]]:
-    for i, set in enumerate(all):
-        if n in set:
-            return (i, set)
-    return (-1, [])
