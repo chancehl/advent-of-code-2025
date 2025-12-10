@@ -1,6 +1,6 @@
 from aoc.common.timer import timed
 from aoc.common.euclid import Coordinates2D, compute_area
-from .floorgrid import FloorGrid
+from aoc.common.polygon import Polygon
 
 from itertools import combinations
 
@@ -22,17 +22,14 @@ def part_one(input_txt: str) -> int:
 def part_two(input_txt: str) -> int:
     coords = parse_coordinates(input_txt)
 
-    # all possible corner combinations - needs filtered
-    coord_combinations = list(combinations(coords, 2))
-
-    # valid combinations only (aka those that have exclusively red and green tiles)
-    valid_combinations = []
-    for combination in coord_combinations:
-        ...
+    shape = Polygon(coords, filled=True)
 
     max_area = 0
-    for x, y in valid_combinations:
-        max_area = max(max_area, compute_area(x, y))
+
+    coord_combinations = list(combinations(coords, 2))
+    for i, (x, y) in enumerate(coord_combinations):
+        if shape.contains(x, y):
+            max_area = max(max_area, compute_area(x, y))
 
     return max_area
 
