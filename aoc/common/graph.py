@@ -1,4 +1,5 @@
 from collections import defaultdict, deque
+from math import prod
 
 
 class Graph:
@@ -77,3 +78,31 @@ class Graph:
             )
 
         return results
+
+    def count_paths_through(self, start: str, end: str, must_hit: list[str]) -> int:
+        lengths = []
+
+        current = start
+        for i in range(0, len(must_hit)):
+            lengths.append(self.count_subpaths(current, must_hit[i]))
+            current = must_hit[i]
+
+        # always connect the end
+        lengths.append(self.count_subpaths(current, end))
+
+        return prod(lengths)
+
+    def count_subpaths(self, start: str, end: str) -> int:
+        subpaths = self.compute_subpaths(start)[end]
+
+        return subpaths
+
+    def compute_subpaths(self, start: str) -> defaultdict[str, int]:
+        dp: defaultdict[str, int] = defaultdict(int)
+        dp[start] = 1  # there's exactly 1 way to be at the source (you start here)
+
+        for vertex in self.topological_sort():
+            for neighbor in self.get_neighbors(vertex):
+                dp[neighbor] += dp[vertex]
+
+        return dp

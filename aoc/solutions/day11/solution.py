@@ -12,12 +12,7 @@ def part_one(input_txt: str) -> int:
 @timed
 def part_two(input_txt: str) -> int:
     graph = make_graph(input_txt)
-
-    svr_to_fft = compute_subpaths(graph, "svr")["fft"]
-    fft_to_dac = compute_subpaths(graph, "fft")["dac"]
-    dac_to_out = compute_subpaths(graph, "dac")["out"]
-
-    return svr_to_fft * fft_to_dac * dac_to_out
+    return graph.count_paths_through("svr", "out", must_hit=["fft", "dac"])
 
 
 def make_graph(input_txt: str) -> Graph:
