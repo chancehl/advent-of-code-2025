@@ -59,12 +59,7 @@ def generate(ctx, day):
     example_file = day_dir / "example.txt"
     example_file.touch()
 
-    click.echo(f"🎊 Ho ho ho! Day {day} template created! 🎊")
-    click.echo("")
-    click.echo("Ready to solve? Run this command:")
-    click.echo(f"   uv run -m aoc execute --day {day} --part 1 --example")
-    click.echo("")
-    click.echo("🎅 May your code be merry! 🎄")
+    click.echo(f"🎊 day {day} template created 🎊")
 
 
 @cli.command()
