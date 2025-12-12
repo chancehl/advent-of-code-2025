@@ -20,11 +20,7 @@ def part_two(input_txt: str) -> int:
 
     for line in input_txt.splitlines():
         _, buttons, joltages = parse_instructions(line)
-
-        presses = solve_machine(buttons, joltages)
-
-        if presses is not None:
-            total_presses += sum(presses)
+        total_presses += calculate_required_presses(buttons, joltages)
 
     return total_presses
 
@@ -52,7 +48,7 @@ def parse_instructions(s: str) -> tuple[str, list[list[int]], list[int]]:
 def determine_min_flips(lights: str, buttons: list[list[int]]) -> int:
     min_flips = len(buttons)
 
-    for i in range(1, len(buttons)):
+    for i in range(1, len(buttons) + 1):
         button_combos = combinations(buttons, i)
         for combo in list(button_combos):
             current_flips = calculate_flips(lights, list(combo))
@@ -71,92 +67,83 @@ def calculate_flips(lights: str, buttons: list[list[int]]) -> int | None:
     for button in buttons:
         current = current.flip(button)
         flips += 1
-        if current == target:
-            return flips
+
+    if current == target:
+        return flips
 
     return None
 
 
-def build_counter_register(buttons: list[list[int]], n: int) -> dict[int, list[int]]:
-    register = {}
+###############################################################################################################
 
-    for i in range(0, n):
-        affectors = []
+#### ALL CODE BEYOND THIS POINT COMES FROM THIS /R/ADVENTOFCODE POST:
+####
+#### https://www.reddit.com/r/adventofcode/comments/1pk87hl/2025_day_10_part_2_bifurcate_your_way_to_victory
+####
+#### NOT GOING TO LIE, I DON'T UNDERSTAND A WORD OF THIS BLACK MAGIC MATH BULLSHIT
+#### I ASKED CHATGPT TO MAP THEIR TERMINOLY TO MY OWN AND HELP ME IMPLEMENT WHAT THEY WERE TALKING ABOUT AND
+#### BY SOME MIRACLE IT WORKED. I TAKE NO CREDIT.
 
-        for j, button in enumerate(buttons):
-            if i in button:
-                affectors.append(j)
-
-        register[i] = affectors
-
-    return register
+###############################################################################################################
 
 
-def solve_machine(buttons: list[list[int]], targets: list[int]) -> list[int] | None:
-    register = build_counter_register(buttons, len(targets))
+def generate_successful_button_combos(
+    lights: str, buttons: list[list[int]]
+) -> list[list[int]]:
+    combos = []
 
-    presses = [0] * len(buttons)
-    counters = [0] * len(targets)
+    # include full-length combos
+    for i in range(1, len(buttons) + 1):
+        button_combos = combinations(buttons, i)
+        for combo in list(button_combos):
+            # calculate_flips now checks final state after all presses
+            if calculate_flips(lights, list(combo)) is not None:
+                combos.append(combo)
 
-    best = {"total": float("inf"), "presses": None}
-
-    search(0, buttons, presses, counters, register, targets, 0, best)
-
-    return best["presses"]
+    return combos
 
 
-def search(
-    button_index: int,
-    buttons: list[list[int]],
-    presses: list[int],
-    counters: list[int],
-    register: dict[int, list[int]],
-    targets: list[int],
-    presses_so_far: int,
-    best: dict,
-) -> None:
-    # BASE CASE
-    if button_index == len(presses):
-        if counters == targets and presses_so_far < best["total"]:
-            best["total"] = presses_so_far
-            best["presses"] = presses.copy()
-        return
+def calculate_required_presses(buttons: list[list[int]], joltages: list[int]) -> int:
+    if all(i == 0 for i in joltages):
+        return 0
 
-    b = button_index
+    answer = 1_000_000  # arbitrarily high, doesn't matter. we won't take 1 million button presses
+    number_of_variables = len(joltages)
+    pattern_costs = patterns_from_buttons(buttons, number_of_variables)
 
-    if buttons[b]:
-        max_k = min(targets[i] for i in buttons[b])
-    else:
-        max_k = 0
+    def recurse(goal: tuple[int, ...]) -> int:
+        if all(i == 0 for i in goal):
+            return 0
 
-    for k in range(0, max_k + 1):
-        presses[b] = k
+        local_answer = answer
+        for pattern, pattern_cost in pattern_costs.items():
+            # pattern must be <= goal elementwise and parity must match
+            if all(p <= g and (p % 2) == (g % 2) for p, g in zip(pattern, goal)):
+                new_goal = tuple((g - p) // 2 for p, g in zip(pattern, goal))
+                candidate = pattern_cost + 2 * recurse(new_goal)
+                if candidate < local_answer:
+                    local_answer = candidate
 
-        # apply k presses
-        for affected in buttons[b]:
-            counters[affected] += k
+        return local_answer
 
-        new_total = presses_so_far + k
+    return recurse(tuple(joltages))
 
-        # bounding
-        if new_total >= best["total"]:
-            # undo and break — more k will only be worse
-            for affected in buttons[b]:
-                counters[affected] -= k
-            presses[b] = 0
-            return
 
-        # prune overflow
-        if any(counters[i] > targets[i] for i in range(len(counters))):
-            for affected in buttons[b]:
-                counters[affected] -= k
-            presses[b] = 0
-            continue
+def patterns_from_buttons(
+    buttons: list[list[int]], num_vars: int
+) -> dict[tuple[int, ...], int]:
+    out: dict[tuple[int, ...], int] = {}
+    num_buttons = len(buttons)
 
-        # recurse
-        search(b + 1, buttons, presses, counters, register, targets, new_total, best)
+    # convert button definitions to coeff tuples (0/1 per variable)
+    coeffs = [tuple(int(i in b) for i in range(num_vars)) for b in buttons]
 
-        # undo
-        for affected in buttons[b]:
-            counters[affected] -= k
-        presses[b] = 0
+    for pattern_len in range(num_buttons + 1):
+        for btn_indices in combinations(range(num_buttons), pattern_len):
+            # sum selected coeff tuples elementwise
+            pattern = tuple(
+                map(sum, zip((0,) * num_vars, *(coeffs[i] for i in btn_indices)))
+            )
+            if pattern not in out:
+                out[pattern] = pattern_len
+    return out
