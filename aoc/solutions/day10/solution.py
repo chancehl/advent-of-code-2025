@@ -81,7 +81,7 @@ def calculate_flips(lights: str, buttons: list[list[int]]) -> int | None:
 #### https://www.reddit.com/r/adventofcode/comments/1pk87hl/2025_day_10_part_2_bifurcate_your_way_to_victory
 ####
 #### NOT GOING TO LIE, I DON'T UNDERSTAND A WORD OF THIS BLACK MAGIC MATH BULLSHIT
-#### I ASKED CHATGPT TO MAP THEIR TERMINOLY TO MY OWN AND HELP ME IMPLEMENT WHAT THEY WERE TALKING ABOUT AND
+#### I ASKED CHATGPT TO MAP THEIR TERMINOLOGY TO MY OWN AND HELP ME IMPLEMENT WHAT THEY WERE TALKING ABOUT AND
 #### BY SOME MIRACLE IT WORKED. I TAKE NO CREDIT.
 
 ###############################################################################################################
