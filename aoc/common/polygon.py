@@ -1,91 +1,88 @@
 from aoc.common.euclid import Coordinates2D
 
 
-# This is the one I wrote. It works, but it holds the shape in memory and is super inefficient.
-# See the file with a similar name in this directory for an optimized version.
+# I wrote this class originally, but it was insanely inefficient
 class Polygon:
     def __init__(self, coords: list[Coordinates2D], filled: bool = False) -> None:
-        self._path = self.build_polygon(coords, filled)
         self._corners = coords
+        self._filled = filled
 
-    def build_polygon(
-        self, coords: list[Coordinates2D], filled: bool = False
-    ) -> list[Coordinates2D]:
-        path = []
+        # row_bounds maps y -> (min_x, max_x) for that row (inclusive)
+        self._row_bounds: dict[int, tuple[int, int]] = {}
+        # for non-filled shapes, store explicit perimeter points for exact containment checks
+        self._perimeter: set[Coordinates2D] = set()
 
-        y_axis = {}
+        self.build_polygon(coords, filled)
 
-        sorted_coords = sorted(coords, key=lambda c: c[1])
-        for _, y in sorted_coords:
-            if y not in y_axis:
-                y_axis[y] = list(filter(lambda c: c[1] == y, sorted_coords))
+    def build_polygon(self, coords: list[Coordinates2D], filled: bool = False) -> None:
+        if not coords:
+            return
 
-        x_axis = {}
+        # Build min/max for rows (y) and columns (x) from corner coords
+        y_axis: dict[int, list[int]] = {}
+        x_axis: dict[int, list[int]] = {}
 
-        sorted_coords = sorted(coords, key=lambda c: c[0])
-        for x, _ in sorted_coords:
-            if x not in x_axis:
-                x_axis[x] = list(filter(lambda c: c[0] == x, sorted_coords))
+        for x, y in coords:
+            y_axis.setdefault(y, []).append(x)
+            x_axis.setdefault(x, []).append(y)
 
-        for y in y_axis:
-            largest_x_coord = max(y_axis[y], key=lambda c: c[0])[0]
-            smallest_x_coord = min(y_axis[y], key=lambda c: c[0])[0]
+        # For each y present in corners, horizontal span from min_x to max_x
+        horizontal_spans: dict[int, set[int]] = {}
+        for y, xs in y_axis.items():
+            min_x = min(xs)
+            max_x = max(xs)
+            horizontal_spans[y] = set(range(min_x, max_x + 1))
 
-            for value in range(smallest_x_coord, largest_x_coord + 1):
-                path.append((value, y))
+        # For each x present in corners, vertical span from min_y to max_y
+        vertical_spans_by_y: dict[int, set[int]] = {}
+        for x, ys in x_axis.items():
+            min_y = min(ys)
+            max_y = max(ys)
+            for y in range(min_y, max_y + 1):
+                vertical_spans_by_y.setdefault(y, set()).add(x)
 
-        for x in x_axis:
-            largest_y_coord = max(x_axis[x], key=lambda c: c[1])[1]
-            smallest_y_coord = min(x_axis[x], key=lambda c: c[1])[1]
+        # Combine spans to form the perimeter points for those rows
+        path_xs_by_y: dict[int, set[int]] = {}
+        for y, xs in horizontal_spans.items():
+            path_xs_by_y.setdefault(y, set()).update(xs)
+        for y, xs in vertical_spans_by_y.items():
+            path_xs_by_y.setdefault(y, set()).update(xs)
 
-            for value in range(smallest_y_coord, largest_y_coord + 1):
-                path.append((x, value))
-
+        # If filled, compute continuous interval bounds per row
         if filled:
-            grouped_y = {}
-            for _, y in path:
-                if y not in grouped_y:
-                    shared_y = list(filter(lambda c: c[1] == y, path))
-                    grouped_y[y] = set([coord[0] for coord in shared_y])
+            for y, xs in path_xs_by_y.items():
+                if not xs:
+                    continue
+                min_x = min(xs)
+                max_x = max(xs)
+                self._row_bounds[y] = (min_x, max_x)
+        else:
+            # store explicit perimeter points for exact membership checks
+            for y, xs in path_xs_by_y.items():
+                for x in xs:
+                    self._perimeter.add((x, y))
 
-            for x in grouped_y:
-                max_x = max(grouped_y[x])
-                min_x = min(grouped_y[x])
+    def contains(self, a: Coordinates2D, b: Coordinates2D) -> bool:
+        smaller_x = min([a, b], key=lambda c: c[0])[0]
+        smaller_y = min([a, b], key=lambda c: c[1])[1]
 
-                for value in range(min_x, max_x + 1):
-                    if (value, x) not in path:
-                        path.append((value, x))
+        larger_x = max([a, b], key=lambda c: c[0])[0]
+        larger_y = max([a, b], key=lambda c: c[1])[1]
 
-        return path
-
-    def contains(self, x: Coordinates2D, y: Coordinates2D) -> bool:
-        smaller_x = min([x, y], key=lambda c: c[0])[0]
-        smaller_y = min([x, y], key=lambda c: c[1])[1]
-
-        larger_x = max([x, y], key=lambda c: c[0])[0]
-        larger_y = max([x, y], key=lambda c: c[1])[1]
-
-        for inside_x in range(smaller_x, larger_x):
-            for inside_y in range(smaller_y, larger_y):
-                if (inside_x, inside_y) not in self._path:
+        # iterate rows in the rectangle (note: range is exclusive of larger_x/larger_y
+        # to preserve original behavior)
+        for inside_y in range(smaller_y, larger_y):
+            if self._filled:
+                bounds = self._row_bounds.get(inside_y)
+                if not bounds:
                     return False
+                min_x, max_x = bounds
+                if min_x > smaller_x or max_x < (larger_x - 1):
+                    return False
+            else:
+                # exact perimeter membership check
+                for inside_x in range(smaller_x, larger_x):
+                    if (inside_x, inside_y) not in self._perimeter:
+                        return False
 
         return True
-
-    def render(self):
-        rows = max(self._path, key=lambda c: c[1])[1] + 1
-        cols = max(self._path, key=lambda c: c[0])[0] + 1
-
-        grid = [["." for _ in range(0, cols)] for _ in range(0, rows)]
-        for x, y in self._path:
-            if (x, y) in self._corners:
-                grid[y][x] = "#"
-            else:
-                grid[y][x] = "X"
-
-        s = ""
-        for row in grid:
-            for col in row:
-                s += col
-            s += "\n"
-        print(s)
