@@ -1,7 +1,9 @@
 from aoc.common.euclid import Coordinates2D
 
 
-# I wrote this class originally, but it was insanely inefficient
+# I wrote this class originally, but it was insanely inefficient because it stored the whole shape in memory.
+# I had copilot rewrite this so that instead we used a map to represent bounds and then the `contains` method
+# would just check to make sure every coordinate was in bounds.
 class Polygon:
     def __init__(self, coords: list[Coordinates2D], filled: bool = False) -> None:
         self._corners = coords
